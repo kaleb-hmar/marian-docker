@@ -38,6 +38,16 @@ RUN file=$(basename "$cmake_url") && \
     bash $file --prefix=/usr --skip-license && \
     rm $file
 
+# install Intel GPU drivers
+RUN echo 'deb [trusted=yes arch=amd64] https://repositories.intel.com/graphics/ubuntu bionic main' \
+> /etc/apt/sources.list.d/intel-graphics.list
+
+ARG url=https://repositories.intel.com/graphics/intel-graphics.key
+ADD $url /
+RUN file=$(basename "$url") && \
+    apt-key add "$file" && \
+    rm "$file"
+
 RUN apt-get update -y && \
 apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
 intel-opencl \
